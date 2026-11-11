@@ -15,14 +15,15 @@ CVM_DATA_PATH = DATA_DIR / "scec_cvm_data.csv"
 CTM_DATA_PATH = DATA_DIR / "scec_ctm_data.csv"
 
 PROCESSED_DIR = PROJECT_ROOT / "processed"
+RISKMAPS_DIR = PROJECT_ROOT / "riskMaps"
 METRICS_DIR = PROJECT_ROOT / "metrics"
 MODEL_DIR = PROJECT_ROOT / "training" / "models"
 
 for directory in [DATA_DIR, PROCESSED_DIR, METRICS_DIR, MODEL_DIR]:
     directory.mkdir(parents=True, exist_ok=True)
 
-RISK_MAP_SAVE_PATH = DATA_DIR / "risk_map_calibrated.csv"
-METRICS_SAVE_PATH = DATA_DIR / "forecast_metrics.json"
+RISK_MAP_SAVE_PATH = RISKMAPS_DIR / "risk_map_calibrated.csv"
+METRICS_SAVE_PATH = METRICS_DIR / "forecast_metrics.json"
 
 # ============================================================
 # 2. PARÁMETROS GEOGRÁFICOS Y DE LA MALLA
