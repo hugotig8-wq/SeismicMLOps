@@ -15,7 +15,7 @@ CFM_DATA_PATH = DATA_DIR / "processed" / "xgboost_earthquakes_cfm_dataset.parque
 CVM_DATA_PATH = DATA_DIR / "scec_cvm_data.csv"
 CTM_DATA_PATH = DATA_DIR / "scec_ctm_data.csv"
 
-PROCESSED_DIR = PROJECT_ROOT / "processed"
+PROCESSED_DIR = DATA_DIR / "processed"
 RISKMAPS_DIR = PROJECT_ROOT / "riskMaps"
 METRICS_DIR = PROJECT_ROOT / "metrics"
 MODEL_DIR = PROJECT_ROOT / "training" / "models"
