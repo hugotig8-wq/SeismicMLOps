@@ -11,7 +11,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 DATA_DIR = PROJECT_ROOT / "data" 
 DATA_PATH = DATA_DIR / "earthquakes.csv"
 
-CFM_DATA_PATH = DATA_DIR / "xgboost_earthquakes_cfm_dataset.parquet"
+CFM_DATA_PATH = DATA_DIR / "processed" / "xgboost_earthquakes_cfm_dataset.parquet"
 CVM_DATA_PATH = DATA_DIR / "scec_cvm_data.csv"
 CTM_DATA_PATH = DATA_DIR / "scec_ctm_data.csv"
 
