@@ -19,10 +19,10 @@ CFM_DIR = DATA_DIR / "CFM"
 CFM_EXTRACTED_DIR = CFM_DIR / "extracted"
 OUTPUT_DIR = DATA_DIR
 
-METADATA_OUTPUT = OUTPUT_DIR / "cfm_metadata_clean.csv"
-VERTICES_OUTPUT = OUTPUT_DIR / "cfm_vertices_1000m.csv"
-TRIANGLES_OUTPUT = OUTPUT_DIR / "cfm_triangles_1000m.csv"
-REPORT_OUTPUT = OUTPUT_DIR / "cfm_quality_report.txt"
+METADATA_OUTPUT = CFM_DIR / "processed" / "cfm_metadata_clean.csv"
+VERTICES_OUTPUT = CFM_DIR / "processed" / "cfm_vertices_1000m.csv"
+TRIANGLES_OUTPUT = CFM_DIR / "processed" / "cfm_triangles_1000m.csv"
+REPORT_OUTPUT = CFM_DIR / "processed" / "cfm_quality_report.txt"
 
 CFM_CRS = "EPSG:26711"
 EARTHQUAKE_CRS = "EPSG:4326"
