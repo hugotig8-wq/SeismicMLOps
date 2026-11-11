@@ -1,5 +1,6 @@
 # config.py
 from pathlib import Path
+from datetime import datetime
 
 # ============================================================
 # 1. RUTAS DEL PROYECTO (CORREGIDAS)
@@ -22,8 +23,8 @@ MODEL_DIR = PROJECT_ROOT / "training" / "models"
 for directory in [DATA_DIR, PROCESSED_DIR, METRICS_DIR, MODEL_DIR]:
     directory.mkdir(parents=True, exist_ok=True)
 
-RISK_MAP_SAVE_PATH = RISKMAPS_DIR / "risk_map_calibrated.csv"
-METRICS_SAVE_PATH = METRICS_DIR / "forecast_metrics.json"
+RISK_MAP_SAVE_PATH = RISKMAPS_DIR / f"risk_map_calibrated_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv"
+METRICS_SAVE_PATH = METRICS_DIR / f"forecast_metrics{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.json"
 
 # ============================================================
 # 2. PARÁMETROS GEOGRÁFICOS Y DE LA MALLA
