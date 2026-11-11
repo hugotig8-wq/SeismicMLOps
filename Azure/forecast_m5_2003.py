@@ -112,7 +112,7 @@ def run_forecast_pipeline():
         "roc_auc": round(auc_score, 4),
         "brier_score": round(brier_score, 4),
         "max_calibrated_probability": round(max_prob, 4),
-        "n_features": X_train.shape[1]
+        "n_features": X_train.shape[1],
         "tt_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
 
