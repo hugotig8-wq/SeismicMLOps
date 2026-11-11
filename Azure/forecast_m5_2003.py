@@ -3,6 +3,7 @@
 
 import json
 import logging
+from datetime import datetime
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_auc_score, brier_score_loss
@@ -112,6 +113,7 @@ def run_forecast_pipeline():
         "brier_score": round(brier_score, 4),
         "max_calibrated_probability": round(max_prob, 4),
         "n_features": X_train.shape[1]
+        "tt_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
 
     with open(config.METRICS_SAVE_PATH, "w") as f:
