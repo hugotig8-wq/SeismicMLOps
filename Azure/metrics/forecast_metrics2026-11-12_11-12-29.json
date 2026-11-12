@@ -1,0 +1,11 @@
+{
+    "model_type": "xgboost",
+    "calibration_method": "sigmoid",
+    "use_cfm": false,
+    "use_vs30": true,
+    "roc_auc": 0.7903,
+    "brier_score": 0.0185,
+    "max_calibrated_probability": 0.2528,
+    "n_features": 6,
+    "tt_date": "2026-11-12 11:12:32"
+}
