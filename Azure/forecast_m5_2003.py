@@ -6,7 +6,7 @@ from datetime import datetime
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import roc_auc_score, brier_score_loss
+from sklearn.metrics import roc_auc_score, brier_score_loss, recall_score, confusion_matrix
 
 import config
 from models import train_and_calibrate_model
@@ -118,9 +118,43 @@ def run_forecast_pipeline():
     brier_score = float(brier_score_loss(y_test, y_probs))
     max_prob = float(y_probs.max())
 
+    # --- CÁLCULO DE MÉTRICAS EXTENDIDAS ---
+
+    # 1. Top-K Recall (K = 10% de las celdas con mayor probabilidad)
+    k = max(1, int(len(y_probs) * 0.10))
+    top_k_indices = np.argsort(y_probs)[-k:]
+
+    # Extraemos los targets reales (y_test) de esas Top-K celdas
+    y_test_array = y_test.values if hasattr(y_test, 'values') else np.array(y_test)
+    top_k_positives = np.sum(y_test_array[top_k_indices] == 1)
+    total_positives = np.sum(y_test_array == 1)
+    top_k_recall = top_k_positives / total_positives if total_positives > 0 else 0.0
+
+    # 2. Métricas y Matriz de Confusión para múltiples umbrales (0.1, 0.2, 0.3, 0.4, 0.5)
+    umbrales = [0.1, 0.2, 0.3, 0.4, 0.5]
+    metricas_umbral = {}
+
+    for u in umbrales:
+        y_pred = (y_probs >= u).astype(int)
+        tn, fp, fn, tp = confusion_matrix(y_test_array, y_pred, labels=[0, 1]).ravel()
+    
+        tpr = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+        fpr = fp / (fp + tn) if (fp + tn) > 0 else 0.0
+    
+        metricas_umbral[str(u)] = {
+            "TP": int(tp), "FN": int(fn), "FP": int(fp), "TN": int(tn),
+            "TPR": round(tpr, 4), "FPR": round(fpr, 4)
+        }
+
+# --------------------------------------
+
     logging.info(f"Test ROC-AUC: {auc_score:.4f}")
     logging.info(f"Test Brier Score: {brier_score:.4f}")
     logging.info(f"Máxima Probabilidad Calibrada: {max_prob:.4f}")
+    logging.info(f"Top-K recall: {top_k_recall: 4f}")
+    logging.info(f"Matrices de confusión: {metricas_umbral}.")
+    for u in umbrales:
+        logging.info(f"Matriz de confusión de umbral {u}: {metricas_umbral[str(u)]}."
 
     # 8. Generar y Exportar Mapa de Riesgo
     X_test_map = X_test.copy()
@@ -149,7 +183,10 @@ def run_forecast_pipeline():
         "brier_score": round(brier_score, 4),
         "max_calibrated_probability": round(max_prob, 4),
         "n_features": X_train.shape[1],
-        "tt_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        "tt_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "top_k_recall_k": k,
+        "top_k_recall_value": round(top_k_recall, 4),
+        "umbral_metrics": metricas_umbral
     }
 
     with open(config.METRICS_SAVE_PATH, "w") as f:
