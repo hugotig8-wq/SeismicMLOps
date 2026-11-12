@@ -1,4 +1,3 @@
-
 """forecast_m5_2003.py - Pipeline de Entrenamiento, Calibración y Evaluación."""
 
 import json
@@ -9,50 +8,51 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_auc_score, brier_score_loss
 
 import config
-from models import train_and_calibrate_model
+from models import train_and_calibrate_model2
 from features import (
     assign_grid_indices,
     add_cfm_features,
-    grid_to_latlon,
-    create_temporal_split_datasets
+    add_vs30_features,
+    prepare_forecast_data, # <--- NUEVA FUNCIÓN
+    grid_to_latlon
 )
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-
 def run_forecast_pipeline():
-    # 1. Cargar catálogo raw
-    #logging.info("Cargando catálogo sismológico...")
-    #df_raw = pd.read_csv(config.DATA_PATH)
+    # 1. Cargar catálogo raw desde el PARQUET con Vs30 ya integrado
+    logging.info(f"Cargando catálogo desde {config.VS30_DATA_PATH}...")
+    df_raw = pd.read_parquet(config.VS30_DATA_PATH)
     
-    #Segundo training con vs30
-    df_raw = pd.read_parquet(config.CFM_DATA_PATH)
-    # 2. Mapear celdas (grid_i, grid_j)
+    # 2. Mapear celdas (por si el parquet no las trae explícitas)
     df_mapped = assign_grid_indices(df_raw)
     
-    # 3. Construcción de datasets de Train y Test con validación temporal estricta
+    # 3. Construcción de datasets de Train y Test (Target temporal + features históricas)
     logging.info("Construyendo features temporales y asignando targets sin data leakage...")
-    df_train_grid, df_test_grid = create_temporal_split_datasets(
+    df_train_grid, df_test_grid = prepare_forecast_data(
         df_mapped, 
         train_cutoff_year=2003, 
         val_cutoff_year=2013, 
         target_mag=config.TARGET_MAGNITUDE
     )
     
-    
-    # 4. Unir modelo de fallas CFM si está habilitado
+    # 4. Unir Vs30 (y CFM si algún día lo reactivas)
+    # Nota: Como leemos del parquet con Vs30, la columna ya existe, pero 
+    # por seguridad hacemos el merge desde el CSV para garantizar que se cruce bien.
+    if config.USE_VS30:
+        logging.info("Enriqueciendo datasets con VS30 proxy...")
+        df_train_grid = add_vs30_features(df_train_grid, config.VS30CSV_DATA_PATH)
+        df_test_grid = add_vs30_features(df_test_grid, config.VS30CSV_DATA_PATH)
+
     if config.USE_SCEC_CFM:
-        logging.info("Enriqueciendo datasets con características geológicas de SCEC CFM...")
+        logging.info("Enriqueciendo datasets con características SCEC CFM...")
         df_train_grid = add_cfm_features(df_train_grid, config.CFM_DATA_PATH)
         df_test_grid = add_cfm_features(df_test_grid, config.CFM_DATA_PATH)
 
-    if config.USE_VS30:
-        logging.info("Enriqueciendo datasets con características geológicas de VS30 proxy...")
-        df_train_grid = add_vs30_features(df_train_grid, config.VS30_DATA_PATH, config.CFM_DATA_PATH)
-        df_test_grid = add_vs30_features(df_test_grid, config.VS30_DATA_PATH, config.CFM_DATA_PATH)
-
     # 5. Separación de matriz de características (X) y objetivo (y)
-    drop_cols = ["target", "grid_i", "grid_j", "max_past_magnitude", "nearest_fault_name"]
+    # IMPORTANTE: Eliminamos 'seismic_acceleration' por si el parquet viejo la traía y 
+    # 'target' para que el modelo no haga trampa.
+    drop_cols = ["target", "grid_i", "grid_j", "max_past_magnitude"]
     
     X_train_full = df_train_grid.drop(columns=[c for c in drop_cols if c in df_train_grid.columns])
     y_train_full = df_train_grid["target"]
@@ -80,7 +80,6 @@ def run_forecast_pipeline():
     logging.info("Evaluando el modelo calibrado sobre el conjunto de test...")
     y_probs = calibrated_model.predict_proba(X_test)[:, 1]
 
-    # Calcular métricas solo si hay al menos una clase positiva en el conjunto de test
     if len(set(y_test)) > 1:
         auc_score = float(roc_auc_score(y_test, y_probs))
     else:
@@ -100,10 +99,9 @@ def run_forecast_pipeline():
     X_test_map["grid_j"] = df_test_grid.loc[X_test.index, "grid_j"]
     X_test_map["risk_probability"] = y_probs
 
-    # Recuperar coordenadas geográficas y enlace a Google Maps
     X_test_map = grid_to_latlon(X_test_map)
 
-    # Reordenar columnas prioritarias al frente
+    # Reordenar columnas
     cols_order = ["google_maps_url", "latitude", "longitude", "risk_probability", "seismic_rate"] + [
         c for c in X_test_map.columns if c not in ["google_maps_url", "latitude", "longitude", "risk_probability", "seismic_rate"]
     ]
@@ -117,6 +115,7 @@ def run_forecast_pipeline():
         "model_type": config.MODEL_TYPE,
         "calibration_method": config.CALIBRATION_METHOD,
         "use_cfm": config.USE_SCEC_CFM,
+        "use_vs30": config.USE_VS30,
         "roc_auc": round(auc_score, 4),
         "brier_score": round(brier_score, 4),
         "max_calibrated_probability": round(max_prob, 4),
@@ -129,7 +128,5 @@ def run_forecast_pipeline():
 
     logging.info(f"Métricas del modelo exportadas a {config.METRICS_SAVE_PATH}")
 
-
 if __name__ == "__main__":
     run_forecast_pipeline()
-                  
