@@ -95,7 +95,7 @@ def main() -> None:
         "distance_to_nearest_fault_km", "nearest_fault_name",
         "nearest_fault_vertex_depth_km", "nearest_fault_strike", 
         "nearest_fault_dip", "nearest_fault_area_km2", "nearest_fault_slip_sense",
-        "fault_count_5km", "fault_count_10km", "fault_count_20km", "fault_density_10km"
+        "fault_count_5km", "fault_count_10km", "fault_count_20km", "fault_density_10km", "time"
     ]
     
     final_cols = [col for col in features_to_keep if col in eq_df.columns]
