@@ -1,4 +1,4 @@
-"""forecast_m5_2003.py - Pipeline de Entrenamiento, Calibración y Evaluación."""
+o"""forecast_m5_2003.py - Pipeline de Entrenamiento, Calibración y Evaluación."""
 
 import json
 import logging
@@ -52,18 +52,28 @@ def run_forecast_pipeline():
     # 5. Separación de matriz de características (X) y objetivo (y)
     # IMPORTANTE: Eliminamos 'seismic_acceleration' por si el parquet viejo la traía y 
     # 'target' para que el modelo no haga trampa.
+    # 5. Separación de matriz de características (X) y objetivo (y)
     drop_cols = ["target", "grid_i", "grid_j", "max_past_magnitude"]
-    
+
     X_train_full = df_train_grid.drop(columns=[c for c in drop_cols if c in df_train_grid.columns])
     y_train_full = df_train_grid["target"]
 
     X_test = df_test_grid.drop(columns=[c for c in drop_cols if c in df_test_grid.columns])
     y_test = df_test_grid["target"]
 
-    # Asignar mayor proporción a Validación (35%) para asegurar presencia de positivos
+    # --- NUEVOS PRINTS DE DIAGNÓSTICO ---
+    logging.info(f"Positivos en Train Completo: {y_train_full.sum()} de {len(y_train_full)} celdas")
+    logging.info(f"Positivos en Test Completo: {y_test.sum()} de {len(y_test)} celdas")
+    # ------------------------------------
+
+    # Asignar mayor proporción a Validación...
     X_train, X_val, y_train, y_val = train_test_split(
         X_train_full, y_train_full, test_size=0.35, random_state=42, stratify=y_train_full
     )
+
+    # --- NUEVOS PRINTS DE DIAGNÓSTICO 2 ---
+    logging.info(f"Positivos en X_train: {y_train.sum()}, Positivos en y_val: {y_val.sum()}")
+    # --------------------------------------
 
     logging.info(f"Dataset Split completado: Train={X_train.shape[0]}, Val={X_val.shape[0]}, Test={X_test.shape[0]}")
 
