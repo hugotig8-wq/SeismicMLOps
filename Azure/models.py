@@ -1,5 +1,5 @@
 """Machine learning model training and inference module."""
-
+import logging
 from typing import Tuple
 import numpy as np
 import pandas as pd
