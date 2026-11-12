@@ -88,7 +88,18 @@ def run_forecast_pipeline():
 
     # 7. Evaluación en conjunto de Test
     logging.info("Evaluando el modelo calibrado sobre el conjunto de test...")
-    y_probs = calibrated_model.predict_proba(X_test)[:, 1]
+    
+    # En lugar de:
+    # y_probs = calibrated_model.predict_proba(X_test)[:, 1]
+
+    # Usa esto:
+    probs = calibrated_model.predict_proba(X_test)
+    if probs.shape[1] == 2:
+        y_probs = probs[:, 1]
+    else:
+        # Si el modelo solo devuelve 1 columna, es porque solo vio la clase 0
+        y_probs = np.zeros(len(X_test))
+        logging.warning("¡Atención! El modelo solo devolvió 1 clase. Probabilidades puestas a 0.")
 
     if len(set(y_test)) > 1:
         auc_score = float(roc_auc_score(y_test, y_probs))
