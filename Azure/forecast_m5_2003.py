@@ -69,7 +69,7 @@ def run_forecast_pipeline():
 
     # 6. Entrenamiento de XGBoost y Calibración Sigmoide
     logging.info("Entrenando modelo XGBoost y aplicando calibración sigmoide...")
-    calibrated_model = train_and_calibrate_model(
+    calibrated_model = train_and_calibrate_model2(
         X_train=X_train,
         y_train=y_train,
         X_val=X_val,
