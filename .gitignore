@@ -1,1 +1,14 @@
+# Entornos y caché
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Datos crudos pesados del CFM (NO los subas, ya tienes el parquet)
+data/CFM/
+data/raw/
 *.zip
+*.ts
+
+# Archivos de sistema
+.DS_Store
