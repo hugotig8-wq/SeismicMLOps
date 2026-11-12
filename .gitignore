@@ -4,11 +4,8 @@ venv/
 __pycache__/
 *.pyc
 
-earthquakes.csv
-
 # Datos crudos pesados del CFM (NO los subas, ya tienes el parquet)
 data/CFM/
-data/raw/
 *.zip
 *.ts
 
