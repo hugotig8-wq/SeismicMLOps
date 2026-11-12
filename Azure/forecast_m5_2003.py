@@ -1,4 +1,4 @@
-o"""forecast_m5_2003.py - Pipeline de Entrenamiento, Calibración y Evaluación."""
+"""forecast_m5_2003.py - Pipeline de Entrenamiento, Calibración y Evaluación."""
 
 import json
 import logging
