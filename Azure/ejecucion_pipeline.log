@@ -1,21 +1,21 @@
-2026-11-12 17:00:24,276 - INFO - Cargando catálogo desde /home/humberto/SeismicMLOps/Azure/data/processed/xgboost_cfm_vs30.parquet...
-2026-11-12 17:00:24,969 - INFO - Construyendo features temporales y asignando targets sin data leakage...
-2026-11-12 17:00:26,752 - INFO - Positivos en Train Completo: 28 de 318 celdas
-2026-11-12 17:00:26,752 - INFO - Positivos en Test Completo: 2 de 318 celdas
-2026-11-12 17:00:26,770 - INFO - Positivos en X_train: 18, Positivos en y_val: 10
-2026-11-12 17:00:26,770 - INFO - Dataset Split completado: Train=206, Val=112, Test=318
-2026-11-12 17:00:26,770 - INFO - Entrenando modelo XGBoost y aplicando calibración sigmoide...
-2026-11-12 17:00:26,804 - INFO - Usamos FrozenEstimator
-2026-11-12 17:00:26,835 - INFO - Evaluando el modelo calibrado sobre el conjunto de test...
-2026-11-12 17:00:26,852 - INFO - Test ROC-AUC: 0.6472
-2026-11-12 17:00:26,852 - INFO - Test Brier Score: 0.0188
-2026-11-12 17:00:26,852 - INFO - Máxima Probabilidad Calibrada: 0.2643
-2026-11-12 17:00:26,852 - INFO - Top-K recall:  0.000000
-2026-11-12 17:00:26,853 - INFO - Matrices de confusión: {'0.1': {'TP': 1, 'FN': 1, 'FP': 81, 'TN': 235, 'TPR': np.float64(0.5), 'FPR': np.float64(0.2563)}, '0.2': {'TP': 1, 'FN': 1, 'FP': 60, 'TN': 256, 'TPR': np.float64(0.5), 'FPR': np.float64(0.1899)}, '0.3': {'TP': 0, 'FN': 2, 'FP': 0, 'TN': 316, 'TPR': np.float64(0.0), 'FPR': np.float64(0.0)}, '0.4': {'TP': 0, 'FN': 2, 'FP': 0, 'TN': 316, 'TPR': np.float64(0.0), 'FPR': np.float64(0.0)}, '0.5': {'TP': 0, 'FN': 2, 'FP': 0, 'TN': 316, 'TPR': np.float64(0.0), 'FPR': np.float64(0.0)}}.
-2026-11-12 17:00:26,853 - INFO - Matriz de confusión de umbral 0.1: {'TP': 1, 'FN': 1, 'FP': 81, 'TN': 235, 'TPR': np.float64(0.5), 'FPR': np.float64(0.2563)}.
-2026-11-12 17:00:26,853 - INFO - Matriz de confusión de umbral 0.2: {'TP': 1, 'FN': 1, 'FP': 60, 'TN': 256, 'TPR': np.float64(0.5), 'FPR': np.float64(0.1899)}.
-2026-11-12 17:00:26,853 - INFO - Matriz de confusión de umbral 0.3: {'TP': 0, 'FN': 2, 'FP': 0, 'TN': 316, 'TPR': np.float64(0.0), 'FPR': np.float64(0.0)}.
-2026-11-12 17:00:26,853 - INFO - Matriz de confusión de umbral 0.4: {'TP': 0, 'FN': 2, 'FP': 0, 'TN': 316, 'TPR': np.float64(0.0), 'FPR': np.float64(0.0)}.
-2026-11-12 17:00:26,853 - INFO - Matriz de confusión de umbral 0.5: {'TP': 0, 'FN': 2, 'FP': 0, 'TN': 316, 'TPR': np.float64(0.0), 'FPR': np.float64(0.0)}.
-2026-11-12 17:00:26,871 - INFO - Mapa de riesgo calibrado guardado en /home/humberto/SeismicMLOps/Azure/riskMaps/risk_map_calibrated_2026-11-12_17-00-24.csv
-2026-11-12 17:00:26,871 - INFO - Métricas del modelo exportadas a /home/humberto/SeismicMLOps/Azure/metrics/forecast_metrics2026-11-12_17-00-24.json
+2026-11-12 20:30:59,531 - INFO - Cargando catálogo desde /home/humberto/SeismicMLOps/Azure/data/processed/xgboost_cfm_vs30.parquet...
+2026-11-12 20:30:59,738 - INFO - Construyendo features temporales y asignando targets sin data leakage...
+2026-11-12 20:31:01,206 - INFO - Positivos en Train Completo: 28 de 318 celdas
+2026-11-12 20:31:01,206 - INFO - Positivos en Test Completo: 2 de 318 celdas
+2026-11-12 20:31:01,228 - INFO - Positivos en X_train: 18, Positivos en y_val: 10
+2026-11-12 20:31:01,228 - INFO - Dataset Split completado: Train=206, Val=112, Test=318
+2026-11-12 20:31:01,228 - INFO - Entrenando modelo XGBoost y aplicando calibración sigmoide...
+2026-11-12 20:31:01,261 - INFO - Usamos FrozenEstimator
+2026-11-12 20:31:01,284 - INFO - Evaluando el modelo calibrado sobre el conjunto de test...
+2026-11-12 20:31:01,300 - INFO - Test ROC-AUC: 0.6472
+2026-11-12 20:31:01,300 - INFO - Test Brier Score: 0.0188
+2026-11-12 20:31:01,300 - INFO - Máxima Probabilidad Calibrada: 0.2643
+2026-11-12 20:31:01,300 - INFO - Top-K recall:  0.000000
+2026-11-12 20:31:01,300 - INFO - Matrices de confusión: {'0.1': {'TP': 1, 'FN': 1, 'FP': 81, 'TN': 235, 'TPR': np.float64(0.5), 'FPR': np.float64(0.2563)}, '0.2': {'TP': 1, 'FN': 1, 'FP': 60, 'TN': 256, 'TPR': np.float64(0.5), 'FPR': np.float64(0.1899)}, '0.3': {'TP': 0, 'FN': 2, 'FP': 0, 'TN': 316, 'TPR': np.float64(0.0), 'FPR': np.float64(0.0)}, '0.4': {'TP': 0, 'FN': 2, 'FP': 0, 'TN': 316, 'TPR': np.float64(0.0), 'FPR': np.float64(0.0)}, '0.5': {'TP': 0, 'FN': 2, 'FP': 0, 'TN': 316, 'TPR': np.float64(0.0), 'FPR': np.float64(0.0)}}.
+2026-11-12 20:31:01,300 - INFO - Matriz de confusión de umbral 0.1: {'TP': 1, 'FN': 1, 'FP': 81, 'TN': 235, 'TPR': np.float64(0.5), 'FPR': np.float64(0.2563)}.
+2026-11-12 20:31:01,300 - INFO - Matriz de confusión de umbral 0.2: {'TP': 1, 'FN': 1, 'FP': 60, 'TN': 256, 'TPR': np.float64(0.5), 'FPR': np.float64(0.1899)}.
+2026-11-12 20:31:01,300 - INFO - Matriz de confusión de umbral 0.3: {'TP': 0, 'FN': 2, 'FP': 0, 'TN': 316, 'TPR': np.float64(0.0), 'FPR': np.float64(0.0)}.
+2026-11-12 20:31:01,300 - INFO - Matriz de confusión de umbral 0.4: {'TP': 0, 'FN': 2, 'FP': 0, 'TN': 316, 'TPR': np.float64(0.0), 'FPR': np.float64(0.0)}.
+2026-11-12 20:31:01,300 - INFO - Matriz de confusión de umbral 0.5: {'TP': 0, 'FN': 2, 'FP': 0, 'TN': 316, 'TPR': np.float64(0.0), 'FPR': np.float64(0.0)}.
+2026-11-12 20:31:01,318 - INFO - Mapa de riesgo calibrado guardado en /home/humberto/SeismicMLOps/Azure/riskMaps/risk_map_calibrated_2026-11-12_20-30-59.csv
+2026-11-12 20:31:01,318 - INFO - Métricas del modelo exportadas a /home/humberto/SeismicMLOps/Azure/metrics/forecast_metrics2026-11-12_20-30-59.json
