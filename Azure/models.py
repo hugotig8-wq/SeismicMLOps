@@ -13,13 +13,13 @@ def get_calibrated_model(base_model):
     """Retorna el modelo de calibración asegurando compatibilidad de versiones de scikit-learn."""
     try:
         from sklearn.frozen import FrozenEstimator
-        print("Usamos FrozenEstimator")
+        logging("Usamos FrozenEstimator")
         return CalibratedClassifierCV(
             estimator=FrozenEstimator(base_model), 
             method=config.CALIBRATION_METHOD
         )
     except ImportError:
-        print("No usamos FrozenEstimator")
+        logging("No usamos FrozenEstimator")
         return CalibratedClassifierCV(
             estimator=base_model, 
             method=config.CALIBRATION_METHOD, 
