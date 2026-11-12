@@ -100,7 +100,7 @@ def add_vs30_features(df_grid: pd.DataFrame, vs30_path: str = None) -> pd.DataFr
     df_merged["vs30_proxy"] = df_merged["vs30_proxy"].fillna(760.0)
     df_merged["vs30_log"] = df_merged["vs30_log"].fillna(np.log1p(760.0))
     
-    print(f"      [Vs30] Característica añadida. Rango: "
+    logging(f"      [Vs30] Característica añadida. Rango: "
           f"{df_merged['vs30_proxy'].min():.1f} - {df_merged['vs30_proxy'].max():.1f} m/s. "
           f"(Log1p: {df_merged['vs30_log'].min():.1f} - {df_merged['vs30_log'].max():.1f})")
     
