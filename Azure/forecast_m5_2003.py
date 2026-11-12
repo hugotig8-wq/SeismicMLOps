@@ -154,7 +154,7 @@ def run_forecast_pipeline():
     logging.info(f"Top-K recall: {top_k_recall: 4f}")
     logging.info(f"Matrices de confusión: {metricas_umbral}.")
     for u in umbrales:
-        logging.info(f"Matriz de confusión de umbral {u}: {metricas_umbral[str(u)]}."
+        logging.info(f"Matriz de confusión de umbral {u}: {metricas_umbral[str(u)]}.")
 
     # 8. Generar y Exportar Mapa de Riesgo
     X_test_map = X_test.copy()
