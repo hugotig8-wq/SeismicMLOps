@@ -151,6 +151,36 @@ def create_temporal_split_datasets(df_mapped: pd.DataFrame,
 
     return df_train, df_test
 
+def create_temporal_split_datasets2(df_mapped: pd.DataFrame, 
+                                   train_cutoff_year: int = 2003, 
+                                   val_cutoff_year: int = 2013, 
+                                   target_mag: float = config.TARGET_MAGNITUDE):
+    """Crea matrices de Train y Test aplicando la magnitud objetivo configurada."""
+    df = df_mapped.copy()
+    if "year" not in df.columns and "time" in df.columns:
+        df["year"] = pd.to_datetime(df["time"], format="mixed", errors="coerce").dt.year
+
+    df_grid_features = build_grid_features(df, cutoff_year=train_cutoff_year)
+
+    df_train_period = df[(df["year"] > train_cutoff_year) & (df["year"] <= val_cutoff_year)]
+    df_test_period = df[df["year"] > val_cutoff_year]
+
+    train_m_pairs = df_train_period[df_train_period["magnitude"] >= target_mag][["grid_i", "grid_j"]].drop_duplicates()
+    test_m_pairs = df_test_period[df_test_period["magnitude"] >= target_mag][["grid_i", "grid_j"]].drop_duplicates()
+
+    grid_index = pd.MultiIndex.from_frame(df_grid_features[["grid_i", "grid_j"]])
+    
+    train_index = pd.MultiIndex.from_frame(train_m_pairs) if not train_m_pairs.empty else pd.MultiIndex(levels=[[],[]], codes=[[],[]])
+    test_index = pd.MultiIndex.from_frame(test_m_pairs) if not test_m_pairs.empty else pd.MultiIndex(levels=[[],[]], codes=[[],[]])
+
+    df_train = df_grid_features.copy()
+    df_train["target"] = grid_index.isin(train_index).astype(int)
+
+    df_test = df_grid_features.copy()
+    df_test["target"] = grid_index.isin(test_index).astype(int)
+
+    return df_train, df_test
+
 def grid_to_latlon(df: pd.DataFrame) -> pd.DataFrame:
     """Convierte los índices de la celda a coordenadas geográficas."""
     df = df.copy()
