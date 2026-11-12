@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_auc_score, brier_score_loss
 
 import config
-from models import train_and_calibrate_model2
+from models import train_and_calibrate_model
 from features import (
     assign_grid_indices,
     add_cfm_features,
