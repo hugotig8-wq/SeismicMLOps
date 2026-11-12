@@ -43,6 +43,11 @@ def run_forecast_pipeline():
         df_train_grid = add_cfm_features(df_train_grid, config.CFM_DATA_PATH)
         df_test_grid = add_cfm_features(df_test_grid, config.CFM_DATA_PATH)
 
+    if config.USE_VS30:
+        logging.info("Enriqueciendo datasets con características geológicas de VS30 proxy...")
+        df_train_grid = add_vs30_features(df_train_grid, config.VS30_DATA_PATH)
+        df_test_grid = add_vs30_features(df_test_grid, config.VS30_DATA_PATH)
+
     # 5. Separación de matriz de características (X) y objetivo (y)
     drop_cols = ["target", "grid_i", "grid_j", "max_past_magnitude", "nearest_fault_name"]
     
