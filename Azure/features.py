@@ -165,11 +165,48 @@ def grid_to_latlon(df: pd.DataFrame) -> pd.DataFrame:
     
     return df
 
-def add_vs30_features(df: pd.DataFrame) -> pd.DataFrame:
+def add_vs30_features(df_grid: pd.DataFrame, vs30_path: str = None, cfm_path: str=None) -> pd.DataFrame:
+    
+    if cfm_path is None:
+        cfm_path = config.CFM_DATA_PATH
+    if vs30_path is None:
+        vs30_path = config.VS30_DATA_PATH
+        
+    df = df_grid.copy()
+    try:
+        df_cfm = pd.read_parquet(cfm_path)
+    except Exception:
+        return df
+
+    if "grid_i" not in df_cfm.columns or "grid_j" not in df_cfm.columns:
+        df_cfm = assign_grid_indices(df_cfm)
+
+    numeric_cols = [
+        "vs30_proxy"
+    ]
+
+    cols_to_agg = [c for c in numeric_cols if c in df_cfm.columns]
+    # FIX: Forzar conversión a numérico por si el Excel trae símbolos extraños
+    for col in cols_to_agg:
+        df_cfm[col] = pd.to_numeric(df_cfm[col], errors="coerce")
+        
+    vs30_summary = df_cfm.groupby(["grid_i", "grid_j"])[cols_to_agg].mean().reset_index()
+
+    df_merged = pd.merge(df, cfm_summary, on=["grid_i", "grid_j"], how="left")
+
+    for col in cols_to_agg:
+        if col in df_merged.columns:
+            df_merged[col] = df_merged[col].fillna(df_merged[col].median())
+
+    return df_merged
+
+def add_vs30_features(df: pd.DataFrame, cfm_path:str=None) -> pd.DataFrame:
     """
     Añade la característica de Vs30 y aplica transformaciones para
     mejorar el rendimiento de XGBoost.
     """
+    
+    
     if "vs30_proxy" not in df.columns:
         raise ValueError(
             "La columna 'vs30_proxy' no está en el DataFrame. "
