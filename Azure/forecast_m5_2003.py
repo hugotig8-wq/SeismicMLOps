@@ -50,11 +50,17 @@ def run_forecast_pipeline():
         df_train_grid = add_cfm_features(df_train_grid, config.CFM_DATA_PATH)
         df_test_grid = add_cfm_features(df_test_grid, config.CFM_DATA_PATH)
 
-    # 5. Separación de matriz de características (X) y objetivo (y)
-    # IMPORTANTE: Eliminamos 'seismic_acceleration' por si el parquet viejo la traía y 
-    # 'target' para que el modelo no haga trampa.
-    # 5. Separación de matriz de características (X) y objetivo (y)
+    # 6. Eliminar redundancia: dejar solo vs30_log (eliminamos vs30_proxy crudo)
+    # XGBoost sufre con variables colineales (una es el log de la otra).
+    logging.info("Eliminando 'vs30_proxy' para dejar solo 'vs30_log'...")
+    cols_to_drop_redundant = ["vs30_proxy"]
+
+    df_train_grid = df_train_grid.drop(columns=[c for c in cols_to_drop_redundant if c in df_train_grid.columns])
+    df_test_grid = df_test_grid.drop(columns=[c for c in cols_to_drop_redundant if c in df_test_grid.columns])
+
+    # 7. Separación de matriz de características (X) y objetivo (y)
     drop_cols = ["target", "grid_i", "grid_j", "max_past_magnitude"]
+    # ... (el resto del código de split sigue igual)
 
     X_train_full = df_train_grid.drop(columns=[c for c in drop_cols if c in df_train_grid.columns])
     y_train_full = df_train_grid["target"]
