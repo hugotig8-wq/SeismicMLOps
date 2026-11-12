@@ -212,7 +212,7 @@ def add_vs30_features(df_grid: pd.DataFrame, vs30_path: str = None, cfm_path: st
     print(f"      [Vs30] Característica añadida. Rango original y logaritmico: "
           f"{df_merged['vs30_proxy'].min():.1f} - {df_merged['vs30_proxy'].max():.1f} m/s. \n"
           f"{df_merged['vs30_log'].min():.1f} - {df_merged['vs30_log'].max():.1f} LOG1P"
-         ))
+         )
     
     return df_merged
 
