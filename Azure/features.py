@@ -38,8 +38,7 @@ def add_cfm_features(df_grid: pd.DataFrame, cfm_path: str = None) -> pd.DataFram
         "fault_count_5km",
         "fault_count_10km",
         "fault_count_20km",
-        "fault_density_10km",
-        "vs30_proxy"
+        "fault_density_10km"
     ]
 
     cols_to_agg = [c for c in numeric_cols if c in df_cfm.columns]
@@ -165,4 +164,32 @@ def grid_to_latlon(df: pd.DataFrame) -> pd.DataFrame:
     )
     
     return df
+
+def add_vs30_features(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Añade la característica de Vs30 y aplica transformaciones para
+    mejorar el rendimiento de XGBoost.
+    """
+    if "vs30_proxy" not in df.columns:
+        raise ValueError(
+            "La columna 'vs30_proxy' no está en el DataFrame. "
+            "Verifica que config.cfm_data_path apunta al archivo xgboost_cfm_vs30.parquet"
+        )
+    
+    # 1. Tratamiento de nulos (por si acaso, aunque ya los rellenamos a 760)
+    df["vs30_proxy"] = df["vs30_proxy"].fillna(760.0)
+    
+    # 2. Transformación logarítmica (opcional pero muy recomendada)
+    # Ayuda a XGBoost a manejar la escala geológica de forma más suave.
+    # Lo guardamos como una nueva columna para no perder el valor original.
+    df["vs30_log"] = np.log1p(df["vs30_proxy"])
+    
+    print(f"      [Vs30] Característica añadida. Rango original: "
+          f"{df['vs30_proxy'].min():.1f} - {df['vs30_proxy'].max():.1f} m/s")
+    
+    return df
+
+
+
+
     
