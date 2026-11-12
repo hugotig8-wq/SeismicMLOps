@@ -14,8 +14,8 @@ DATA_PATH = DATA_DIR / "earthquakes.csv"
 #Para el primer entrenamiento sin vs30
 #CFM_DATA_PATH = DATA_DIR / "processed" / "xgboost_earthquakes_cfm_dataset.parquet"
 
-#Para el segundo entrenamiento com vs30
-CFM_DATA_PATH = DATA_DIR / "processed" / "xgboost_earthquakes_cfm_dataset.parquet"
+#Para el segundo entrenamiento con vs30
+CFM_DATA_PATH = DATA_DIR / "processed" / "xgboost_earthquakes_vs30.parquet"
 
 CVM_DATA_PATH = DATA_DIR / "scec_cvm_data.csv"
 CTM_DATA_PATH = DATA_DIR / "scec_ctm_data.csv"
