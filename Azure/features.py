@@ -106,7 +106,7 @@ def add_vs30_features(df_grid: pd.DataFrame, vs30_path: str = None) -> pd.DataFr
     
     return df_merged
 
-def prepare_forecast_data(df_events: pd.DataFrame, train_cutoff_year: int = 2003, 
+def prepare_forecast_data1(df_events: pd.DataFrame, train_cutoff_year: int = 2003, 
                           val_cutoff_year: int = 2013, target_mag: float = config.TARGET_MAGNITUDE) -> tuple:
     """
     Crea las matrices X e y con targets temporales (sin data leakage) y 
@@ -177,3 +177,84 @@ def grid_to_latlon(df: pd.DataFrame) -> pd.DataFrame:
     )
     
     return df
+
+def prepare_forecast_data(df_events: pd.DataFrame, train_cutoff_year: int = 2003, 
+                          val_cutoff_year: int = 2013, target_mag: float = config.TARGET_MAGNITUDE) -> tuple:
+    """
+    Crea las matrices X e y con targets temporales (sin data leakage) y 
+    agrega las features sísmicas por celda para el entrenamiento del modelo.
+    """
+    df = df_events.copy()
+    
+    # 1. Asegurar columna 'year' buscando en múltiples formatos (blindaje)
+    if "year" not in df.columns:
+        date_col = None
+        for col in ["time", "Date", "date", "timestamp"]:
+            if col in df.columns:
+                date_col = col
+                break
+                
+        if date_col:
+            # Convertimos a datetime y extraemos el año
+            df["year"] = pd.to_datetime(df[date_col], format="mixed", errors="coerce").dt.year
+        else:
+            # Si no encontramos columna, probamos si el índice tiene las fechas
+            try:
+                df["year"] = pd.to_datetime(df.index, errors="coerce").year
+            except Exception:
+                pass
+
+    # Si después de todo eso sigue sin haber 'year', lanzamos un error descriptivo
+    if "year" not in df.columns:
+        raise KeyError(
+            "No se pudo encontrar la columna de tiempo en el parquet. "
+            f"Columnas disponibles: {list(df.columns)}. "
+            "Asegúrate de que el parquet tiene 'time' o 'Date'."
+        )
+
+    # Eliminamos filas donde el año sea NaT por si hubo algún error de parseo
+    df = df.dropna(subset=["year"])
+
+    # 2. Calcular features históricas estáticas usando solo el período de Train (<= 2003)
+    df_train_period = df[df["year"] <= train_cutoff_year]
+    
+    # Agrupamos por celda las estadísticas del catálogo histórico
+    df_grid_features = df_train_period.groupby(["grid_i", "grid_j"]).agg(
+        seismic_rate=("magnitude", "count"),
+        max_past_magnitude=("magnitude", lambda x: x.max() if len(x) > 0 else 0.0),
+        mean_magnitude=("magnitude", lambda x: x.mean() if len(x) > 0 else 0.0),
+        std_magnitude=("magnitude", lambda x: x.std() if len(x) > 1 else 0.0)
+    ).reset_index()
+
+    # Rellenar NaNs
+    df_grid_features["max_past_magnitude"] = df_grid_features["max_past_magnitude"].fillna(0.0)
+    df_grid_features["mean_magnitude"] = df_grid_features["mean_magnitude"].fillna(0.0)
+    df_grid_features["std_magnitude"] = df_grid_features["std_magnitude"].fillna(0.0)
+
+    # 3. Calcular b_value por celda (basado en historial)
+    b_values = []
+    for _, row in df_grid_features.iterrows():
+        cell_mags = df_train_period[(df_train_period["grid_i"] == row["grid_i"]) & 
+                                    (df_train_period["grid_j"] == row["grid_j"])]["magnitude"]
+        b_values.append(calculate_b_value(cell_mags, mc=config.MIN_MAGNITUDE))
+    df_grid_features["b_value"] = b_values
+
+    # 4. Definir los targets futuros (lo que queremos predecir)
+    df_train_targets = df[(df["year"] > train_cutoff_year) & (df["year"] <= val_cutoff_year)]
+    df_test_targets = df[df["year"] > val_cutoff_year]
+
+    train_m_pairs = df_train_targets[df_train_targets["magnitude"] >= target_mag][["grid_i", "grid_j"]].drop_duplicates()
+    test_m_pairs = df_test_targets[df_test_targets["magnitude"] >= target_mag][["grid_i", "grid_j"]].drop_duplicates()
+
+    # 5. Asignar target 1/0 a la malla
+    grid_index = pd.MultiIndex.from_frame(df_grid_features[["grid_i", "grid_j"]])
+    train_index = pd.MultiIndex.from_frame(train_m_pairs) if not train_m_pairs.empty else pd.MultiIndex(levels=[[],[]], codes=[[],[]])
+    test_index = pd.MultiIndex.from_frame(test_m_pairs) if not test_m_pairs.empty else pd.MultiIndex(levels=[[],[]], codes=[[],[]])
+
+    df_train = df_grid_features.copy()
+    df_train["target"] = grid_index.isin(train_index).astype(int)
+
+    df_test = df_grid_features.copy()
+    df_test["target"] = grid_index.isin(test_index).astype(int)
+
+    return df_train, df_test
