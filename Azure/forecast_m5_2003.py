@@ -22,9 +22,11 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 
 def run_forecast_pipeline():
     # 1. Cargar catálogo raw
-    logging.info("Cargando catálogo sismológico...")
-    df_raw = pd.read_csv(config.DATA_PATH)
+    #logging.info("Cargando catálogo sismológico...")
+    #df_raw = pd.read_csv(config.DATA_PATH)
     
+    #Segundo training con vs30
+    df_raw = pd.read_parquet(config.CFM_DATA_PATH)
     # 2. Mapear celdas (grid_i, grid_j)
     df_mapped = assign_grid_indices(df_raw)
     
@@ -36,6 +38,7 @@ def run_forecast_pipeline():
         val_cutoff_year=2013, 
         target_mag=config.TARGET_MAGNITUDE
     )
+    
     
     # 4. Unir modelo de fallas CFM si está habilitado
     if config.USE_SCEC_CFM:
