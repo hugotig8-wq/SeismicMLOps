@@ -71,10 +71,8 @@ CALIBRATION_METHOD = "sigmoid"
 # 4. SWITCHES DE MODELOS SCEC
 # ============================================================
 
-#En el primer entrenamiento en true en el segundo false porque ya estan calculadas estas features
-#USE_SCEC_CFM = True
-
-USE_VS30 = True
+USE_SCEC_CFM = True
+USE_VS30 = False
 USE_SCEC_CFM = False
 USE_SCEC_CTM = False
 USE_SCEC_CVM = False
