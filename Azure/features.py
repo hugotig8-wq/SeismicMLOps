@@ -38,7 +38,8 @@ def add_cfm_features(df_grid: pd.DataFrame, cfm_path: str = None) -> pd.DataFram
         "fault_count_5km",
         "fault_count_10km",
         "fault_count_20km",
-        "fault_density_10km"
+        "fault_density_10km",
+        "vs30_proxy"
     ]
 
     cols_to_agg = [c for c in numeric_cols if c in df_cfm.columns]
