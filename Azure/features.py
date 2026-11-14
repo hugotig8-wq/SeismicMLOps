@@ -108,16 +108,12 @@ def add_vs30_features(df_grid: pd.DataFrame, vs30_path: str = None) -> pd.DataFr
     if "grid_i" not in df_vs30.columns or "grid_j" not in df_vs30.columns:
         df_vs30 = assign_grid_indices(df_vs30)
     
-    cols_to_agg = ["vs30_proxy","vs30_log"]
-    
     df_vs30["vs30_proxy"] = pd.to_numeric(df_vs30["vs30_proxy"], errors="coerce").fillna(760.0)
     df_vs30["vs30_log"] = np.log1p(df_vs30["vs30_proxy"])
 
     # Nos quedamos solo con las columnas necesarias para el merge
     df_vs30_subset = df_vs30[["grid_i", "grid_j", "vs30_proxy", "vs30_log"]].drop_duplicates(subset=["grid_i", "grid_j"])
 
-    vs30_summary = df_vs30_subset.groupby(["grid_i", "grid_j"])[cols_to_agg].mean().reset_index()
-    
     df_merged = pd.merge(df_cfm, df_vs30_subset, on=["grid_i", "grid_j"], how="left")
     df_merged["vs30_proxy"] = df_merged["vs30_proxy"].fillna(760.0)
     df_merged["vs30_log"] = df_merged["vs30_log"].fillna(np.log1p(760.0))
