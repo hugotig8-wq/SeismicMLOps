@@ -29,8 +29,9 @@ MODEL_DIR = PROJECT_ROOT / "training" / "models"
 for directory in [DATA_DIR, PROCESSED_DIR, METRICS_DIR, MODEL_DIR]:
     directory.mkdir(parents=True, exist_ok=True)
 
-RISK_MAP_SAVE_PATH = RISKMAPS_DIR / f"risk_map_calibrated_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv"
-METRICS_SAVE_PATH = METRICS_DIR / f"forecast_metrics{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.json"
+RISK_MAP_SAVE_PATH = RISKMAPS_DIR / f"risk_map_calibrated_{datetime.now().strftime("%Y-%m-%d_%H-%M")}.csv"
+METRICS_SAVE_PATH = METRICS_DIR / f"forecast_metrics{datetime.now().strftime("%Y-%m-%d_%H-%M")}.json"
+OUTPUT_PARQUET = PROJECT_ROOT / "processed" / f"xgboost_{Path(__file__).stem}_{datetime.now().strftime("%Y-%m-%d_%H-%M")}.parquet"
 
 # ============================================================
 # 2. PARÁMETROS GEOGRÁFICOS Y DE LA MALLA
