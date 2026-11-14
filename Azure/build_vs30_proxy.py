@@ -17,6 +17,7 @@ principal). Los huecos de Vs30 se rellenan con 760 m/s (roca firme).
 from pathlib import Path
 import sys
 import pandas as pd
+import config
 
 # ---------------------------------------------------------------------------
 # Rutas (script ubicado en Azure/)
