@@ -89,13 +89,6 @@ def add_vs30_features(df_grid: pd.DataFrame, vs30_path: str = None) -> pd.DataFr
     if vs30_path is None:
         vs30_path = config.VS30_DATA_PATH
     
-    cfm_path = config.CFM_DATA_PATH
-    
-    try:
-        df_cfm = pd.read_parquet(cfm_path)
-    except Exception:
-        logging.info("Error al cargar parquet de cfm")  
-    
     df = df_grid.copy()
     
     try:
@@ -114,7 +107,7 @@ def add_vs30_features(df_grid: pd.DataFrame, vs30_path: str = None) -> pd.DataFr
     # Nos quedamos solo con las columnas necesarias para el merge
     df_vs30_subset = df_vs30[["grid_i", "grid_j", "vs30_proxy", "vs30_log"]].drop_duplicates(subset=["grid_i", "grid_j"])
 
-    df_merged = pd.merge(df_cfm, df_vs30_subset, on=["grid_i", "grid_j"], how="left")
+    df_merged = pd.merge(df, df_vs30_subset, on=["grid_i", "grid_j"], how="left")
     df_merged["vs30_proxy"] = df_merged["vs30_proxy"].fillna(760.0)
     df_merged["vs30_log"] = df_merged["vs30_log"].fillna(np.log1p(760.0))
     
