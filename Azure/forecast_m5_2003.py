@@ -189,6 +189,7 @@ def run_forecast_pipeline():
         "max_calibrated_probability": round(max_prob, 4),
         "n_features": X_train.shape[1],
         "features": X_train.columns.tolist(),
+        "used_parquet": config.OUTPUT_PARQUET,
         "tt_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "top_k_recall_k": k,
         "top_k_recall_value": round(top_k_recall, 4),
