@@ -6,15 +6,6 @@ import inspect
 # 1. RUTAS DEL PROYECTO (CORREGIDAS)
 # ============================================================
 
-def obtener_importador():
-    # Recorremos la pila de llamadas (empezando desde el llamador inmediato)
-    for frame_info in inspect.stack()[1:]:
-        archivo = frame_info.filename
-        # Ignoramos los archivos internos del sistema de importación de Python (importlib)
-        if not archivo.startswith("<") and "importlib" not in archivo:
-            return Path(archivo).name
-    return None
-
 PROJECT_ROOT = Path(__file__).resolve().parent
 
 # Definimos la carpeta base de datos (puedes cambiarla a la ruta absoluta de tu PC)
@@ -41,7 +32,7 @@ for directory in [DATA_DIR, PROCESSED_DIR, METRICS_DIR, MODEL_DIR]:
 
 RISK_MAP_SAVE_PATH = RISKMAPS_DIR / f"risk_map_calibrated_{datetime.now().strftime("%Y-%m-%d_%H-%M")}.csv"
 METRICS_SAVE_PATH = METRICS_DIR / f"forecast_metrics{datetime.now().strftime("%Y-%m-%d_%H-%M")}.json"
-OUTPUT_PARQUET = PROJECT_ROOT / "processed" / f"xgboost_{obtener_importador()}_{datetime.now().strftime("%Y-%m-%d_%H-%M")}.parquet"
+OUTPUT_PARQUET = PROJECT_ROOT / "processed" / f"xgboost_{Path(sys.argv[0]).stem}_{datetime.now().strftime("%Y-%m-%d_%H-%M")}.parquet"
 
 # ============================================================
 # 2. PARÁMETROS GEOGRÁFICOS Y DE LA MALLA
