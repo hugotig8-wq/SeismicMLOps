@@ -48,8 +48,8 @@ def run_forecast_pipeline():
     # por seguridad hacemos el merge desde el CSV para garantizar que se cruce bien.
     if config.USE_VS30:
         logging.info("Enriqueciendo datasets con VS30 proxy...")
-        df_train_grid = add_vs30_features(df_train_grid, config.VS30CSV_DATA_PATH)
-        df_test_grid = add_vs30_features(df_test_grid, config.VS30CSV_DATA_PATH)
+        df_train_grid = add_vs30_features(df_train_grid, config.VS30_DATA_PATH)
+        df_test_grid = add_vs30_features(df_test_grid, config.VS30_DATA_PATH)
 
     if config.USE_SCEC_CFM:
         logging.info("Enriqueciendo datasets con características SCEC CFM...")
