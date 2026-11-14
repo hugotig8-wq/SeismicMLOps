@@ -26,7 +26,7 @@ def run_forecast_pipeline():
         if config.USE_VS30:
             logging.info(f"Cargando catálogo desde {config.VS30_DATA_PATH}...")
             df_raw = pd.read_parquet(config.VS30_DATA_PATH)
-        else if config.USE_SCEC_CFM:
+        elif config.USE_SCEC_CFM:
             logging.info(f"Cargando catálogo desde {config.CFM_DATA_PATH}...")
             df_raw = pd.read_parquet(config.CFM_DATA_PATH)
     except:
