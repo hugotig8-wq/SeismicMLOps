@@ -7,7 +7,7 @@ Enriquece el parquet del catálogo sísmico con la característica `vs30_proxy`:
 
     input : Azure/data/processed/xgboost_earthquakes_cfm_dataset.parquet
     vs30  : Azure/data/processed/vs30_grid.csv
-    output: config.OUTPUT_PARQUET
+    output: xgboost_cfm_vs30.parquet #Luego config.OUTPUT_PARQUET
 
 Si el parquet de entrada no trae `grid_i` / `grid_j`, se calculan con
 `assign_grid_indices()` de features.py (misma lógica que el pipeline
@@ -27,7 +27,7 @@ DATA_DIR    = SCRIPT_DIR / "data" / "processed"
 
 INPUT_PARQUET  = DATA_DIR / "xgboost_earthquakes_cfm_dataset.parquet"
 VS30_GRID_FILE = DATA_DIR / "vs30_grid.csv"
-OUTPUT_PARQUET = config.OUTPUT_PARQUET
+OUTPUT_PARQUET = DATA_DIR / "xgboost_cfm_vs30.parquet" #Luego con su archivo generador y fecha config.OUTPUT_PARQUET
 
 VS30_DEFAULT = 760.0  # m/s — fallback para celdas sin dato
 
