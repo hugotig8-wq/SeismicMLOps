@@ -22,9 +22,15 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 
 def run_forecast_pipeline():
     # 1. Cargar catálogo raw desde el PARQUET con Vs30 ya integrado
-    logging.info(f"Cargando catálogo desde {config.VS30_DATA_PATH}...")
-    df_raw = pd.read_parquet(config.VS30_DATA_PATH)
-    
+    try:
+        if config.USE_VS30:
+            logging.info(f"Cargando catálogo desde {config.VS30_DATA_PATH}...")
+            df_raw = pd.read_parquet(config.VS30_DATA_PATH)
+        else if config.USE_SCEC_CFM:
+            logging.info(f"Cargando catálogo desde {config.CFM_DATA_PATH}...")
+            df_raw = pd.read_parquet(config.CFM_DATA_PATH)
+    except:
+        loggin.info("Error al cargar parquet.")
     # 2. Mapear celdas (por si el parquet no las trae explícitas)
     df_mapped = assign_grid_indices(df_raw)
     
@@ -152,7 +158,6 @@ def run_forecast_pipeline():
     logging.info(f"Test Brier Score: {brier_score:.4f}")
     logging.info(f"Máxima Probabilidad Calibrada: {max_prob:.4f}")
     logging.info(f"Top-K recall: {top_k_recall: 4f}")
-    logging.info(f"Matrices de confusión: {metricas_umbral}.")
     for u in umbrales:
         logging.info(f"Matriz de confusión de umbral {u}: {metricas_umbral[str(u)]}.")
 
@@ -183,6 +188,7 @@ def run_forecast_pipeline():
         "brier_score": round(brier_score, 4),
         "max_calibrated_probability": round(max_prob, 4),
         "n_features": X_train.shape[1],
+        "features": X_train.columns.tolist(),
         "tt_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "top_k_recall_k": k,
         "top_k_recall_value": round(top_k_recall, 4),

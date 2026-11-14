@@ -1,0 +1,65 @@
+{
+    "model_type": "xgboost",
+    "calibration_method": "sigmoid",
+    "use_cfm": false,
+    "use_vs30": true,
+    "roc_auc": 0.8204,
+    "brier_score": 0.0191,
+    "max_calibrated_probability": 0.2379,
+    "n_features": 8,
+    "features": [
+        "seismic_rate",
+        "mean_magnitude",
+        "std_magnitude",
+        "recent_seismic_rate",
+        "seismic_acceleration",
+        "b_value",
+        "vs30_proxy",
+        "vs30_log"
+    ],
+    "tt_date": "2026-11-14 14:53:49",
+    "top_k_recall_k": 31,
+    "top_k_recall_value": 0.5,
+    "umbral_metrics": {
+        "0.1": {
+            "TP": 1,
+            "FN": 1,
+            "FP": 84,
+            "TN": 232,
+            "TPR": 0.5,
+            "FPR": 0.2658
+        },
+        "0.2": {
+            "TP": 1,
+            "FN": 1,
+            "FP": 63,
+            "TN": 253,
+            "TPR": 0.5,
+            "FPR": 0.1994
+        },
+        "0.3": {
+            "TP": 0,
+            "FN": 2,
+            "FP": 0,
+            "TN": 316,
+            "TPR": 0.0,
+            "FPR": 0.0
+        },
+        "0.4": {
+            "TP": 0,
+            "FN": 2,
+            "FP": 0,
+            "TN": 316,
+            "TPR": 0.0,
+            "FPR": 0.0
+        },
+        "0.5": {
+            "TP": 0,
+            "FN": 2,
+            "FP": 0,
+            "TN": 316,
+            "TPR": 0.0,
+            "FPR": 0.0
+        }
+    }
+}

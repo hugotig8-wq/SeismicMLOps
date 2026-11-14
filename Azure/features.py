@@ -3,6 +3,7 @@
 import numpy as np
 import pandas as pd
 import config
+import logging
 
 def calculate_b_value(magnitudes: pd.Series, mc: float = 1.4) -> float:
     """Calcula el valor b de Gutenberg-Richter mediante Máxima Verosimilitud (Aki, 1965)."""
@@ -80,7 +81,7 @@ def add_cfm_features(df_grid: pd.DataFrame, cfm_path: str = None) -> pd.DataFram
         if col in df_merged.columns:
             df_merged[col] = df_merged[col].fillna(df_merged[col].median())
 
-    print(f"      [CFM] Características añadidas: {len(cols_to_agg)} columnas -> {cols_to_agg}")
+    logging.info(f"[CFM] Características añadidas: {len(cols_to_agg)} columnas -> {cols_to_agg}")
     return df_merged
 
 def add_vs30_features(df_grid: pd.DataFrame, vs30_path: str = None) -> pd.DataFrame:
