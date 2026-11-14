@@ -186,7 +186,27 @@ def prepare_forecast_data(df_events: pd.DataFrame, train_cutoff_year: int = 2003
     df_grid_features["mean_magnitude"] = df_grid_features["mean_magnitude"].fillna(0.0)
     df_grid_features["std_magnitude"] = df_grid_features["std_magnitude"].fillna(0.0)
 
-    # 3. Calcular b_value por celda (basado en historial)
+    # 3. Calcular la actividad reciente durante los cinco años previos al corte.
+    recent_start_year = train_cutoff_year - 4
+    df_recent = (
+        df_train_period[df_train_period["year"] >= recent_start_year]
+        .groupby(["grid_i", "grid_j"])["magnitude"]
+        .count()
+        .reset_index()
+    )
+    df_recent.columns = ["grid_i", "grid_j", "recent_seismic_rate"]
+    df_grid_features = pd.merge(
+        df_grid_features, df_recent, on=["grid_i", "grid_j"], how="left"
+    )
+    df_grid_features["recent_seismic_rate"] = df_grid_features[
+        "recent_seismic_rate"
+    ].fillna(0.0)
+    df_grid_features["seismic_acceleration"] = (
+        df_grid_features["recent_seismic_rate"]
+        / (df_grid_features["seismic_rate"] + 1e-5)
+    )
+
+    # 4. Calcular b_value por celda (basado en historial)
     b_values = []
     for _, row in df_grid_features.iterrows():
         cell_mags = df_train_period[(df_train_period["grid_i"] == row["grid_i"]) & 
@@ -194,14 +214,14 @@ def prepare_forecast_data(df_events: pd.DataFrame, train_cutoff_year: int = 2003
         b_values.append(calculate_b_value(cell_mags, mc=config.MIN_MAGNITUDE))
     df_grid_features["b_value"] = b_values
 
-    # 4. Definir los targets futuros (lo que queremos predecir)
+    # 5. Definir los targets futuros (lo que queremos predecir)
     df_train_targets = df[(df["year"] > train_cutoff_year) & (df["year"] <= val_cutoff_year)]
     df_test_targets = df[df["year"] > val_cutoff_year]
 
     train_m_pairs = df_train_targets[df_train_targets["magnitude"] >= target_mag][["grid_i", "grid_j"]].drop_duplicates()
     test_m_pairs = df_test_targets[df_test_targets["magnitude"] >= target_mag][["grid_i", "grid_j"]].drop_duplicates()
 
-    # 5. Asignar target 1/0 a la malla
+    # 6. Asignar target 1/0 a la malla
     grid_index = pd.MultiIndex.from_frame(df_grid_features[["grid_i", "grid_j"]])
     train_index = pd.MultiIndex.from_frame(train_m_pairs) if not train_m_pairs.empty else pd.MultiIndex(levels=[[],[]], codes=[[],[]])
     test_index = pd.MultiIndex.from_frame(test_m_pairs) if not test_m_pairs.empty else pd.MultiIndex(levels=[[],[]], codes=[[],[]])

@@ -73,6 +73,5 @@ CALIBRATION_METHOD = "sigmoid"
 
 USE_SCEC_CFM = True
 USE_VS30 = False
-USE_SCEC_CFM = False
 USE_SCEC_CTM = False
 USE_SCEC_CVM = False

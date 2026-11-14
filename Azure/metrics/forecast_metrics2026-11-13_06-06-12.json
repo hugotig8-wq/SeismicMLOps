@@ -1,0 +1,55 @@
+{
+    "model_type": "xgboost",
+    "calibration_method": "sigmoid",
+    "use_cfm": false,
+    "use_vs30": false,
+    "roc_auc": 0.6472,
+    "brier_score": 0.0188,
+    "max_calibrated_probability": 0.2643,
+    "n_features": 4,
+    "tt_date": "2026-11-13 06:06:14",
+    "top_k_recall_k": 31,
+    "top_k_recall_value": 0.0,
+    "umbral_metrics": {
+        "0.1": {
+            "TP": 1,
+            "FN": 1,
+            "FP": 81,
+            "TN": 235,
+            "TPR": 0.5,
+            "FPR": 0.2563
+        },
+        "0.2": {
+            "TP": 1,
+            "FN": 1,
+            "FP": 60,
+            "TN": 256,
+            "TPR": 0.5,
+            "FPR": 0.1899
+        },
+        "0.3": {
+            "TP": 0,
+            "FN": 2,
+            "FP": 0,
+            "TN": 316,
+            "TPR": 0.0,
+            "FPR": 0.0
+        },
+        "0.4": {
+            "TP": 0,
+            "FN": 2,
+            "FP": 0,
+            "TN": 316,
+            "TPR": 0.0,
+            "FPR": 0.0
+        },
+        "0.5": {
+            "TP": 0,
+            "FN": 2,
+            "FP": 0,
+            "TN": 316,
+            "TPR": 0.0,
+            "FPR": 0.0
+        }
+    }
+}
