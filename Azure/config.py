@@ -2,6 +2,7 @@
 from pathlib import Path
 from datetime import datetime
 import inspect
+import sys
 # ============================================================
 # 1. RUTAS DEL PROYECTO (CORREGIDAS)
 # ============================================================
@@ -16,7 +17,7 @@ DATA_PATH = DATA_DIR / "earthquakes.csv"
 CFM_DATA_PATH = DATA_DIR / "processed" / "xgboost_earthquakes_cfm_dataset.parquet"
 
 #Para el segundo entrenamiento con vs30
-VS30_DATA_PATH = DATA_DIR / "processed" / "xgboost_cfm_vs30.parquet"
+VS30_DATA_PATH = DATA_DIR / "processed" / "xgboost_config.parquet"
 VS30CSV_DATA_PATH = DATA_DIR / "processed" / "vs30_grid.csv"
 
 CVM_DATA_PATH = DATA_DIR / "scec_cvm_data.csv"
